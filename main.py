@@ -1,16 +1,49 @@
 
-# python - m pip install "pymongo[srv]"
-from pymongo import MongoClient
-from pymongo.server_api import ServerApi
+# import connect
+from pprint import pprint
+from crud import *
 
-client = MongoClient(
-    "mongodb+srv://nik160186:16011986@mymongo.x4hv9eh.mongodb.net/?retryWrites=true&w=majority",
-       server_api=ServerApi('1') )
+def func_name(txt:str):
+    txt = txt.strip()
+    pprint(txt)
 
-db = client.book
 
-# result_1 = db.authors.insert_one({"12345":"1234"})
-# result_2 = db.quotes()
+def func_tag(txt):
+    txt = txt.strip()
+    lst = Quote.objects(tags = txt)
+    for i in lst:
+        i= i.to_mongo().to_dict()
+        print(i["quote"], "\n")
 
-# print(result_1)
-# print(result_2)
+
+def func_tags(txt):
+    tags = txt.split(",")
+    # lst = Quote.objects(tags == tags[1] or tags == tags[0])
+    # for i in lst:
+    #     i= i.to_mongo().to_dict()
+    #     print(i["quote"], "\n")
+
+
+
+if __name__ == '__main__':
+    pprint ("starting...")
+    while True:
+        text = input(">>>")
+        command = text.split(":")
+        if command[0] == "exit":
+            break
+        if len(command) > 1:
+            match command[0].strip():
+                case "name":
+                    func_name(command[1])
+                case "tags":
+                    func_tags(command[1])
+                case "tag":
+                    func_tag(command[1])
+                    
+                case _:
+                    print("no valid command")
+
+        else:
+            pprint("error arguments")
+        
