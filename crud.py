@@ -8,7 +8,7 @@ def find_name(name):
     i = Author.objects.get(fullname = name).id
     return i
 
-# pprint(find_one())
+pprint(find_name("Albert Einstein"))
 
 
 
