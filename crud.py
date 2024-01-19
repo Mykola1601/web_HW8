@@ -16,7 +16,7 @@ def find_tags(name):
     i = Author.objects.get(fullname = name).id
     return i
 
-pprint(find_name("Albert Einstein"))
+# pprint(find_name("Albert Einstein"))
 
 
 

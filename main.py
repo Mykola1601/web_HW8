@@ -5,28 +5,40 @@ from crud import *
 
 def func_name(txt:str):
     txt = txt.strip()
-    pprint(txt)
+    author_id = Author.objects.get(fullname = txt )
+    res = []
+    lst = Quote.objects(author = author_id)
+    for i in lst:
+        res.extend(i.tags)
+    print(res)
 
 
 def func_tag(txt):
-    txt = txt.strip()
-    lst = Quote.objects(tags = txt)
-    for i in lst:
-        i= i.to_mongo().to_dict()
-        print(i["quote"], "\n")
+    func_tags(txt)
 
-
-def func_tags(txt):
-    tags = txt.split(",")
-    # lst = Quote.objects(tags == tags[1] or tags == tags[0])
+    # txt = txt.strip()
+    # print(txt)
+    # lst = Quote.objects(tags = txt)
     # for i in lst:
     #     i= i.to_mongo().to_dict()
     #     print(i["quote"], "\n")
 
 
+def func_tags(txt):
+    res = []
+    txt = txt.strip()
+    lst = txt.split(",")
+    quotes = Quote.objects(tags__in = lst )
+    for i in quotes:
+        res.append(i.quote.encode('utf-8'))
+    print(res)
+
+
 
 if __name__ == '__main__':
     pprint ("starting...")
+
+
     while True:
         text = input(">>>")
         command = text.split(":")
