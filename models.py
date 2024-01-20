@@ -16,5 +16,9 @@ class Quote(Document):
     quote = StringField()
     
 
-
+class Contact(Document):
+    fullname = StringField()
+    email = StringField()
+    logic = BooleanField(default = False)
+    
 

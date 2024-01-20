@@ -15,7 +15,6 @@ def func_name(txt:str):
 
 def func_tag(txt):
     func_tags(txt)
-
     # txt = txt.strip()
     # print(txt)
     # lst = Quote.objects(tags = txt)
@@ -32,7 +31,6 @@ def func_tags(txt):
     for i in quotes:
         res.append(i.quote.encode('utf-8'))
     print(res)
-
 
 
 if __name__ == '__main__':
@@ -52,10 +50,8 @@ if __name__ == '__main__':
                     func_tags(command[1])
                 case "tag":
                     func_tag(command[1])
-                    
                 case _:
                     print("no valid command")
-
         else:
             pprint("error arguments")
         
