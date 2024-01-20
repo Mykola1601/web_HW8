@@ -1,11 +1,14 @@
 
-# import connect
+import connect
+
+import re
 from pprint import pprint
+from models import Quote, Author, Contact
 from crud import *
 
 def func_name(txt:str):
     txt = txt.strip()
-    author_id = Author.objects.get(fullname = txt )
+    author_id = Author.objects.get(fullname__istartswith = txt)
     res = []
     lst = Quote.objects(author = author_id)
     for i in lst:
@@ -14,13 +17,15 @@ def func_name(txt:str):
 
 
 def func_tag(txt):
-    func_tags(txt)
-    # txt = txt.strip()
-    # print(txt)
-    # lst = Quote.objects(tags = txt)
-    # for i in lst:
-    #     i= i.to_mongo().to_dict()
-    #     print(i["quote"], "\n")
+    res = []
+    txt = txt.strip()
+    txt = f"{txt}.*"
+    print(txt)
+    regex = re.compile(txt)
+    cont = Quote.objects(tags__iregex = regex  )
+    for i in cont:
+        res.append(i.quote.encode('utf-8'))
+    print(res)
 
 
 def func_tags(txt):
@@ -35,7 +40,6 @@ def func_tags(txt):
 
 if __name__ == '__main__':
     pprint ("starting...")
-
 
     while True:
         text = input(">>>")

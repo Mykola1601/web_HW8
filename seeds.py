@@ -1,7 +1,9 @@
-from models import Quote, Author
-from pprint import pprint
-import connect
+
 import json
+from pprint import pprint
+
+import connect
+from models import Quote, Author
 
 
 with open("authors.json") as file:
