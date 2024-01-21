@@ -14,19 +14,24 @@ connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost', port=5672, credentials=credentials))
 channel = connection.channel()
 
+channel.confirm_delivery()
 channel.exchange_declare(exchange='task_mock', exchange_type='direct')
 channel.queue_declare(queue='task_queue', durable=True)
 channel.queue_bind(exchange='task_mock', queue='task_queue')
 
 
-def main():
-    for _ in range(50):
+def seed():
+    for _ in range(20):
         id = Contact(
             fullname = fake.name() ,
-            email = fake.email()
+            email = fake.email(),
+            logic = False
         ).save()
         # print(id.id)
 
+
+def sender():        
+    for id in Contact.objects():
         channel.basic_publish(
             exchange='task_mock',
             routing_key='task_queue',
@@ -39,6 +44,7 @@ def main():
     
     
 if __name__ == '__main__':
-    main()
+    seed()
+    sender()
 
     

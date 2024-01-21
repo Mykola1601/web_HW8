@@ -1,11 +1,23 @@
 
-import connect
-
 import re
 from pprint import pprint
-from models import Quote, Author, Contact
-from crud import *
 
+import redis
+from redis_lru import RedisLRU
+
+import connect
+from models import Quote, Author, Contact
+
+r = redis.Redis(host="localhost", port=6379, password=None)
+
+client = redis.StrictRedis(
+    host="localhost",
+    port=6379, 
+    password=None)
+cache = RedisLRU(client)
+
+
+@cache
 def func_name(txt:str):
     txt = txt.strip()
     author_id = Author.objects.get(fullname__istartswith = txt)
@@ -13,19 +25,19 @@ def func_name(txt:str):
     lst = Quote.objects(author = author_id)
     for i in lst:
         res.extend(i.tags)
-    print(res)
+    return res
 
 
+@cache
 def func_tag(txt):
     res = []
     txt = txt.strip()
     txt = f"{txt}.*"
-    print(txt)
     regex = re.compile(txt)
     cont = Quote.objects(tags__iregex = regex  )
     for i in cont:
         res.append(i.quote.encode('utf-8'))
-    print(res)
+    return res
 
 
 def func_tags(txt):
@@ -35,7 +47,7 @@ def func_tags(txt):
     quotes = Quote.objects(tags__in = lst )
     for i in quotes:
         res.append(i.quote.encode('utf-8'))
-    print(res)
+    return res
 
 
 if __name__ == '__main__':
@@ -49,11 +61,11 @@ if __name__ == '__main__':
         if len(command) > 1:
             match command[0].strip():
                 case "name":
-                    func_name(command[1])
+                    print(func_name(command[1]))
                 case "tags":
-                    func_tags(command[1])
+                    print(func_tags(command[1]))
                 case "tag":
-                    func_tag(command[1])
+                    print(func_tag(command[1]))
                 case _:
                     print("no valid command")
         else:

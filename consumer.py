@@ -17,17 +17,17 @@ channel.queue_declare(queue='task_queue', durable=True)
 print(' [*] Waiting for messages. To exit press CTRL+C')
 
 
-def request(id):
+def some_work(id):
+    time.sleep(1)   #do some work 
     con = Contact.objects.get(id = id)
     con.logic = True
     con.save()
-    time.sleep(1)   #do some work
 
 
 def callback(ch, method, properties, body):
     message = body.decode()
     print(f" [x] Received {message}")
-    request(message)
+    some_work(message)
     print(f" [x] Done: {method.delivery_tag}")
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
