@@ -1,9 +1,8 @@
 import pika
-import sys
 import json
 from faker import Faker
 from datetime import datetime
-
+import random
 import connect
 from models import Contact
 
@@ -16,35 +15,35 @@ channel = connection.channel()
 
 channel.confirm_delivery()
 channel.exchange_declare(exchange='task_mock', exchange_type='direct')
-channel.queue_declare(queue='task_queue', durable=True)
+channel.queue_declare(queue='sms', durable=True)
+channel.queue_declare(queue='email', durable=True)
 channel.queue_bind(exchange='task_mock', queue='task_queue')
 
 
-def seed():
-    for _ in range(20):
+def seed(num):
+    for _ in range(num):
         id = Contact(
             fullname = fake.name() ,
+            phone = fake.phone_number() ,
             email = fake.email(),
+            method = random.choice(["sms", "email"]),
             logic = False
         ).save()
-        # print(id.id)
 
 
 def sender():        
-    for id in Contact.objects():
-        channel.basic_publish(
-            exchange='task_mock',
-            routing_key='task_queue',
-            body=str(id.id).encode(),
-            properties=pika.BasicProperties(
-                delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
-            ))
-        print(" [x] Sent %r" % str(id.id))
+    for obj in Contact.objects():
+        body=str(obj.id).encode()
+        if obj.method == "sms":
+            channel.basic_publish(exchange='task_mock', routing_key='sms', body=body)
+        if obj.method == "email":
+            channel.basic_publish(exchange='task_mock', routing_key='email', body=body)
+        print(" [x] Sent %r" % str(obj.id))
     connection.close()
     
     
 if __name__ == '__main__':
-    seed()
+    seed(50)
     sender()
 
     

@@ -8,7 +8,6 @@ from redis_lru import RedisLRU
 import connect
 from models import Quote, Author, Contact
 
-r = redis.Redis(host="localhost", port=6379, password=None)
 
 client = redis.StrictRedis(
     host="localhost",
@@ -70,4 +69,5 @@ if __name__ == '__main__':
                     print("no valid command")
         else:
             pprint("error arguments")
+        
         

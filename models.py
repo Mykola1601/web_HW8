@@ -18,6 +18,8 @@ class Quote(Document):
 
 class Contact(Document):
     fullname = StringField()
+    phone = StringField()
+    method = StringField(default="sms")
     email = StringField()
     logic = BooleanField(default = False)
     
