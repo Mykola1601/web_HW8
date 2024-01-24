@@ -1,8 +1,7 @@
 
 import json
-from pprint import pprint
 
-import connect
+# import connect
 from models import Quote, Author
 
 def find_name(name):
